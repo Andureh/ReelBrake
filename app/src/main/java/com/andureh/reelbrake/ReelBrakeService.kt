@@ -14,10 +14,24 @@ class ReelBrakeService : AccessibilityService() {
     private var lastInspectAt = 0L
     private var inspectScheduled = false
     private var lastScrollLine = ""
+    private var pendingBrake: Action.ShowBrake? = null
 
     private val delayedInspect = Runnable {
         inspectScheduled = false
         inspect()
+    }
+    /**
+     * Shows a brake only if the viewer is still there a moment later: closing a reel makes
+     * Instagram fire pager scroll events that would otherwise count as a swipe.
+     */
+    private val showBrake = Runnable {
+        val brake = pendingBrake ?: return@Runnable
+        pendingBrake = null
+        inspect()
+        if (policy.braking) {
+            Diagnostics.event("brake shown")
+            overlay.show(brake)
+        }
     }
     private val tick = object : Runnable {
         override fun run() {
@@ -116,16 +130,18 @@ class ReelBrakeService : AccessibilityService() {
             Action.None -> Unit
             is Action.ShowBrake -> {
                 Diagnostics.event("brake: reel ${action.reelNumber}, source ${action.source}, wait ${action.waitSec}s")
-                overlay.show(action)
+                pendingBrake = action
+                handler.removeCallbacks(showBrake)
+                handler.postDelayed(showBrake, BRAKE_CONFIRM_MS)
             }
-            Action.HideBrake -> overlay.hide()
+            Action.HideBrake -> hideBrake()
             Action.Back -> {
-                overlay.hide()
+                hideBrake()
                 Diagnostics.event("leaving with Back")
                 handler.postDelayed({ performGlobalAction(GLOBAL_ACTION_BACK) }, ACTION_DELAY_MS)
             }
             Action.GoHome -> {
-                overlay.hide()
+                hideBrake()
                 Diagnostics.event("leaving to Home")
                 handler.postDelayed({
                     val root = rootInActiveWindow
@@ -134,6 +150,12 @@ class ReelBrakeService : AccessibilityService() {
                 }, ACTION_DELAY_MS)
             }
         }
+    }
+
+    private fun hideBrake() {
+        handler.removeCallbacks(showBrake)
+        pendingBrake = null
+        overlay.hide()
     }
 
     override fun onInterrupt() = Unit
@@ -151,5 +173,6 @@ class ReelBrakeService : AccessibilityService() {
         private const val INSPECT_INTERVAL_MS = 400L
         private const val TICK_MS = 5_000L
         private const val ACTION_DELAY_MS = 120L
+        private const val BRAKE_CONFIRM_MS = 350L
     }
 }

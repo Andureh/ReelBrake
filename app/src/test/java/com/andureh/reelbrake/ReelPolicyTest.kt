@@ -160,19 +160,25 @@ class ReelPolicyTest {
     }
 
     @Test
-    fun `escaping the brake re-arms it on a quick return`() {
+    fun `closing a reel then opening another from messages is free again`() {
         openFrom(dmThread)
-        policy.onViewerScroll(5_000, 1)
-        assertEquals(Action.HideBrake, policy.onLeftInstagram(6_000))
-        assertTrue(openFrom(dmThread, 20_000) is Action.ShowBrake)
+        // Instagram fires a pager scroll while the viewer closes...
+        assertTrue(policy.onViewerScroll(5_000, 1) is Action.ShowBrake)
+        // ...and the viewer is gone right after
+        assertEquals(Action.HideBrake, policy.onScreen(5_200, dmThread))
+        assertEquals(Action.None, openFrom(dmThread, 10_000))
+        assertEquals(1, policy.reelsSeen)
+        assertEquals(Action.None, openFrom(dmThread, 20_000))
+        assertTrue(Stat.EXIT !in stats)
     }
 
     @Test
-    fun `escape is forgotten after a while`() {
+    fun `leaving while the brake is up counts as an exit and the next reel is free`() {
         openFrom(dmThread)
         policy.onViewerScroll(5_000, 1)
-        policy.onLeftInstagram(6_000)
-        assertEquals(Action.None, openFrom(dmThread, 6_000 + ReelPolicy.RESUME_BRAKE_MS + 1))
+        assertEquals(Action.HideBrake, policy.onLeftInstagram(9_000))
+        assertTrue(Stat.EXIT in stats)
+        assertEquals(Action.None, openFrom(dmThread, 20_000))
     }
 
     @Test

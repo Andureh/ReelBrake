@@ -79,8 +79,7 @@ class ReelPolicy(
 
     private var level = 0
     private var lastContinueAt = Long.MIN_VALUE / 2
-    /** Set when the user escaped a brake by leaving the viewer some other way. */
-    private var pendingBrakeAt = Long.MIN_VALUE / 2
+    private var brakeAt = 0L
 
     fun onScreen(now: Long, screen: Screen): Action {
         if (!screen.viewerVisible && !screen.reelsTabSelected) {
@@ -160,18 +159,16 @@ class ReelPolicy(
             }
             Mode.BRAKE -> {
                 onStat(Stat.REEL, source)
-                if (reelsSeen > allowed || now - pendingBrakeAt < RESUME_BRAKE_MS) brake(now) else Action.None
+                if (reelsSeen > allowed) brake(now) else Action.None
             }
         }
     }
 
     private fun leaveViewer(now: Long): Action {
         val wasBraking = braking
-        // Escaping a brake (gesture Back, Home...) re-arms it if the user comes straight back.
-        if (wasBraking) {
-            pendingBrakeAt = now
-            onStat(Stat.EXIT, source)
-        }
+        // Leaving while the brake is up (gesture Back, Home...) is a successful exit. A brake that
+        // vanishes right away came from the scroll events Instagram fires while closing the viewer.
+        if (wasBraking && now - brakeAt >= SPURIOUS_BRAKE_MS) onStat(Stat.EXIT, source)
         inViewer = false
         braking = false
         exiting = false
@@ -194,7 +191,7 @@ class ReelPolicy(
 
     private fun brake(now: Long): Action {
         braking = true
-        pendingBrakeAt = Long.MIN_VALUE / 2
+        brakeAt = now
         if (now - lastContinueAt > LEVEL_DECAY_MS) level = 0
         val wait = (config().baseWaitSec * (level + 1)).coerceAtMost(MAX_WAIT_SEC)
         onStat(Stat.BRAKE, source)
@@ -225,7 +222,7 @@ class ReelPolicy(
         const val EXIT_RETRY_MS = 800L
         const val MAX_EXIT_ATTEMPTS = 3
         const val LEVEL_DECAY_MS = 30 * 60_000L
-        const val RESUME_BRAKE_MS = 2 * 60_000L
+        const val SPURIOUS_BRAKE_MS = 1_000L
         const val MAX_WAIT_SEC = 60
     }
 }

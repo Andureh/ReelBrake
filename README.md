@@ -32,7 +32,7 @@ Each source can be set to **Free** (ReelBrake stays out of the way), **Pause** o
 - **Leave Reels** takes you back to where you came from (the chat, the feed…).
 - **One more** only unlocks after a countdown that grows every time you use it: 10 s, 20 s, 30 s… up to 60 s. It only resets after 30 minutes without Reels.
 - While the pause is on screen, ReelBrake takes audio focus so the reel behind it stops or goes quiet.
-- Escaping the pause another way (gesture back, home, app switcher) and coming straight back brings the pause back.
+- Leaving Reels any way you like (the button, gesture back, switching apps) counts as an exit. The next reel someone sends you is free again.
 
 ### Settings
 - Free reels before the pause (default 1; 0 pauses right away).
