@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">ReelBrake</string>
+    <string name="tagline">A pause before you fall into the Reels loop.</string>
+    <string name="status_on">● Active</string>
+    <string name="status_on_desc">The brake is watching Instagram.</string>
+    <string name="status_off">● Off</string>
+    <string name="status_off_desc">Turn on ReelBrake in Accessibility → Installed apps (or Downloaded services).</string>
+    <string name="open_accessibility">Open Accessibility</string>
+    <string name="restricted_hint">If the option is greyed out (\"restricted setting\"): open App info → ⋮ menu → \"Allow restricted settings\", then try again.</string>
+    <string name="open_app_info">Open App info</string>
+    <string name="today">Today</string>
+    <string name="stat_reels">reels</string>
+    <string name="stat_pauses">pauses</string>
+    <string name="stat_exits">exits</string>
+    <string name="stat_more">\"one more\"</string>
+    <string name="brake_enabled">Brake on</string>
+    <string name="modes_title">What to do with Reels opened from…</string>
+    <string name="mode_off">Free</string>
+    <string name="mode_brake">Pause</string>
+    <string name="mode_block">Block</string>
+    <string name="modes_hint">Pause: lets you watch the first reels, then interrupts. Block: leaves right away. Free: does nothing.</string>
+    <string name="source_reels_tab">Reels tab</string>
+    <string name="source_feed">Feed</string>
+    <string name="source_direct">Messages</string>
+    <string name="source_other">Explore, profiles, others</string>
+    <string name="free_reels">Free reels before the pause</string>
+    <string name="wait">Wait on \"one more\"</string>
+    <string name="wait_hint">The wait grows with every \"one more\" (up to 60 s) and only resets after 30 min without Reels.</string>
+    <string name="max_reel">Max time on the same reel</string>
+    <string name="max_reel_hint">Safety net in case a swipe goes undetected.</string>
+    <string name="battery_title">Battery</string>
+    <string name="battery_desc">If the brake stops working on its own, remove ReelBrake from battery optimization.</string>
+    <string name="battery_button">Battery optimization</string>
+    <string name="diag_title">Diagnostics</string>
+    <string name="diag_desc">Last state read from Instagram (IDs only, no text):</string>
+    <string name="diag_copy">Copy report</string>
+    <string name="diag_copied">Report copied</string>
+    <string name="diag_empty">No data yet. Open Instagram.</string>
+    <string name="brake_title">Pause.</string>
+    <string name="brake_headline_reels_tab">You\'re on reel #%1$d (from the Reels tab).</string>
+    <string name="brake_headline_feed">You\'re on reel #%1$d (from your feed).</string>
+    <string name="brake_headline_direct">You\'re on reel #%1$d (from your messages).</string>
+    <string name="brake_headline_other">You\'re on reel #%1$d (from Explore or a profile).</string>
+    <string name="brake_time">%1$d min in Reels</string>
+    <string name="brake_question">Is this really what you opened Instagram for?</string>
+    <string name="brake_exit">Leave Reels</string>
+    <string name="brake_more">One more</string>
+    <string name="brake_more_countdown">One more (%1$d)</string>
+    <string name="service_description">Reads the structure of Instagram\'s screens (only element identifiers, never text) to detect when you\'re watching Reels and show a pause before you carry on. Collects and sends no data.</string>
+</resources>
